@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require("express");
 const mongoose = require('mongoose');
+var cors = require('cors');
 const { Schema } = mongoose;
 const auth = require("./middleware/auth");
 
