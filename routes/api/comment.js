@@ -5,12 +5,18 @@ module.exports = (app) => {
     try {
       const comments = await Comment.aggregate([
         { $match: { original_post_id: req.query.original_id } },
-        { $sort: { disliked_by: 1 } },
-        { $limit: 100 },
-        { $sort: { liked_by: -1 } }
+        { $sort: { date: -1 } },
+        { $limit: 500 }
       ]);
 
-      res.json(comments);
+      const postCommentsArray = comments.sort((a,b) => {
+        const aLikeDiff = a.liked_by.length - a.disliked_by.length;
+        const bLikeDiff = b.liked_by.length - b.disliked_by.length;
+        return aLikeDiff - bLikeDiff;
+      }).reverse();
+
+      res.json(postCommentsArray);
+      
     } catch (err) {
       res.json({ status: 'error', error: err });
     }

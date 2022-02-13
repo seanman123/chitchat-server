@@ -39,13 +39,17 @@ module.exports = (app) => {
 
   app.get('/api/getPosts', async (req, res) => {
     const posts = await Post.aggregate([
-      { $sort: { disliked_by: 1 } },
-      { $limit: 100 },
-      { $sort: { liked_by: -1 } }
+      { $sort: { date: -1 } },
+      { $limit: 500 }
     ]);
 
     if (posts) {
-      res.json(posts);
+      const postSortedArray = posts.sort((a,b) => {
+        const aLikeDiff = a.liked_by.length - a.disliked_by.length;
+        const bLikeDiff = b.liked_by.length - b.disliked_by.length;
+        return aLikeDiff - bLikeDiff;
+      }).reverse();
+      res.json(postSortedArray);
     } else {
       res.json({ error: 'error' });
     }
