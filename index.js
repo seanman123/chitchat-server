@@ -7,6 +7,7 @@ const auth = require("./middleware/auth");
 const PORT = process.env.PORT || 3001;
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const mongoSecret = process.env.MONGO_URI;
 
